@@ -8,22 +8,44 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	height: 100%;
- }
+}
+
+div#header {
+    clear: both;
+    padding: 1px;
+}
+div#left {
+    float: left;
+    width: 160px;
+	height: 80%;
+    border-right: 1px solid #E0DEDF;
+}
+
+div#right {
+    float: right;
+    width: 160px;
+	height: 80%;
+	border-left: 1px solid #E0DEDF;
+	
+	padding-left: 10px;
+}
+
+div#middle {
+	height: 80%;
+	
+}
  
 #main-content {
 	height: 100%;
 }
- 
+
+#chi-table th, td{
+	border: 1px solid black;
+}
+
 #options {
 	height: 80%;
 	width: 160px;
-	float: left;
-	
-	border-right: 1px solid #E0DEDF;
-}
-
-#chi {
 	float: right;
-	width: 780px;
-	padding-left: 10px;
+	border-left: 1px solid #E0DEDF;
 }

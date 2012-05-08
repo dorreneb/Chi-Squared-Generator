@@ -3,23 +3,31 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Chi-Squared Solver</title>
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script src="js/chi.js"></script>
 	<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Varela'>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
 	<div id="main-content">
-		<h1>Chi-Squared Solver</h1>
-		<div id="options">
+		<div id="header">
+			<h1>Chi-Squared Solver</h1>
+		</div>
+		<div id="left">
 			<h2>Options:</h2>
 			<ul>
-				<li>Add Row </li>
-				<li>Add Column </li>
+				<li onclick="addRow()">Add Row </li>
+				<li onclick="addColumn('Test')">Add Column </li>
 			</ul>
 		</div>
-		
-		<div id="chi">
+		<div id="right">
+			<h2>Math:</h2>
+		</div>
+		<div id="middle">
 			<h2>Chi-Squared Table:</h2>
-
+			<table id="chi-table">
+				<tr></tr>
+			</table>
 		</div>
 	</div>
 
