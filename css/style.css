@@ -40,17 +40,36 @@ div#middle {
 	margin-right: auto;
 }
 
-#chi-table th, td{
+th, td{
 	width: 30px;
 	height: 20px;
 	padding: 5px;
 }
 
-#chi-table td {
+td {
 	border: 1px solid black;
 }
 
-td.rowtitle {
-	border: 1px solid white;
-	color: green;
+th {
+	font-weight: bold;
 }
+
+td.rowtitle {
+	border: none;
+	width: 80px;
+	text-align: right;
+	font-weight: bold;
+}
+
+.small-box {
+	font-size: 10px;
+	color: blue;
+	float: right;
+	margin-top: 0px;
+	vertical-align: top;
+}
+
+.large-box {
+	text-align: center;
+}
+	
