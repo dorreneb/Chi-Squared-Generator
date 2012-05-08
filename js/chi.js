@@ -84,7 +84,20 @@ function updateChiSquared(identifier) {
 	var big = parseInt($("."+identifier+" > .large-box").text());
 	var small = parseInt($("."+identifier+" > .small-box").text());
 	var chisquare = Math.pow((big-small), 2) / small;
-	alert(chisquare);
+	
+	$("#"+boxId).html(identifier+": <span class='result'>"+chisquare+"</span>");
+	calculateChiTotal();
+}
+
+function calculateChiTotal() {
+	var total = 0;
+	//get all chi results
+	$(".result").each(function() {
+		total +=  parseFloat($(this).text());
+	});
+	
+	//put the chi results on the screen
+	$("#chi-squared-result").html("<div class='final_result'>"+total+"</div>");
 }
 
 //Source: http://www.inventpartners.com/content/javascript_is_int
