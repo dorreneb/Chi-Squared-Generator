@@ -17,7 +17,7 @@ function addRow() {
 	
 	//add the cells to the row and label them appropriately.
 	for (var i=1; i <= window.numCols; i++) {
-		$('#chi-table tr:last').append("<td class='row"+row+"_col"+i+"' onclick=\"edit('row"+row+"_col"+i+"');\">" + "_"+ '</td>');
+		$('#chi-table tr:last').append("<td class='row"+row+" col"+i+"' onclick=\"edit('row"+row+" col"+i+"');\">" + " "+ '</td>');
 	}
 
 	//if this is the first row, then shift all the headers over 1 to make room for the title
@@ -46,9 +46,9 @@ function addColumn() {
 	//add an extra cell to each row
 	$('#chi-table tr:not(:first)').each(function(){
 		//get the first class attribute of the column before it (the row)
-		var rowClass = $(this).children().last().attr('class').split("_")[0];
+		var rowClass = $(this).children().last().attr('class').split(" ")[0];
 		
-		$(this).append("<td class='"+rowClass+"_col"+window.numCols+ "' onclick=\"edit('row"+row+"_col"+window.numCols+"');\"></td>");
+		$(this).append("<td class='"+rowClass+" col"+window.numCols+ "' onclick=\"edit('row"+row+" col"+window.numCols+"');\"></td>");
 	});
 	
 	//update Column marginals
@@ -63,8 +63,10 @@ function edit(identifier) {
 	var large = prompt("Enter Large Box Content");
 	
 	if (is_int(small) && is_int(large)){
+		alert(rowCol[1]);
+		
 		//add information to the box
-		$("."+identifier).html("<div class='small-box'>"+small+"</div><div class='large-box'>"+large+"</div>");
+		$("."+rowCol[0]+"."+rowCol[1]).html("<div class='small-box'>"+small+"</div><div class='large-box'>"+large+"</div>");
 		
 		//update the chi squared information
 		updateChiSquared(identifier);
@@ -97,7 +99,7 @@ function calculateChiTotal() {
 	});
 	
 	//put the chi results on the screen
-	$("#chi-squared-result").html("<div class='final_result'>"+total+"</div>");
+	$("#chi-squared-result").html("<div class='final-result'>"+total+"</div>");
 }
 
 //Source: http://www.inventpartners.com/content/javascript_is_int
