@@ -51,10 +51,12 @@ function addColumn() {
 		$(this).append("<td class='"+rowClass+" col"+window.numCols+ "' onclick=\"edit('row"+row+" col"+window.numCols+"');\"></td>");
 	});
 	
-	//update Column marginals
-	$("#column-marginals").append("<li id='colmarginal"+window.numCols+"'>" + title+ "</li>");
-	
 	window.numCols++;
+	
+	//update Column marginals
+	$("#column-marginals").append("<li class='marginalcol"+window.numCols+"'>" + title+ ": <span class='marginal'></span></li>");
+	
+	
 }
 
 function edit(identifier) {
@@ -69,6 +71,7 @@ function edit(identifier) {
 		
 		//update the chi squared information
 		calculateRowMarginal(rowCol[0]);
+		calculateColMarginal(rowCol[1]);
 		updateChiSquared(identifier);
 	} else {
 		alert("Inputs are invalid :(");
@@ -102,9 +105,22 @@ function calculateRowMarginal(rowId) {
 			marginal += parseInt(text);
 		}
 	});
-
 	//update UI
 	$("#row-marginals > #marginal"+rowId+" > .marginal").text(marginal);
+}
+
+function calculateColMarginal(colId) {
+	var marginal = 0;
+	
+	//get all elements in a row and add up the large box part
+	$("."+colId).each(function() {
+		var text = $(this).find(".large-box").text();
+		if (is_int(text)) {
+			marginal += parseInt(text);
+		}
+	});
+	//update UI
+	$("#column-marginals > .marginal"+colId+" > .marginal").text(marginal);
 }
 
 function calculateChiTotal() {
