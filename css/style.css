@@ -1,0 +1,29 @@
+html {
+	height: 100%;
+}
+
+body {
+	font-family: 'Varela', sans-serif;
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	height: 100%;
+ }
+ 
+#main-content {
+	height: 100%;
+}
+ 
+#options {
+	height: 80%;
+	width: 160px;
+	float: left;
+	
+	border-right: 1px solid #E0DEDF;
+}
+
+#chi {
+	float: right;
+	width: 780px;
+	padding-left: 10px;
+}
