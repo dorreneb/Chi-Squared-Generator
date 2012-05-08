@@ -25,14 +25,14 @@ function addRow() {
 		$("#chi-table tr:first").prepend("<th></th>");
 	}
 	
+	//update number of rows
+	window.numRows++;
+	
 	//update row marginals
-	$("#row-marginals").append("<li id='rowmarginal"+window.numCols+"'>" + title+ "</li>");
+	$("#row-marginals").append("<li id='marginalrow"+window.numRows+"'>" + title+ ": " + "<span class='marginal'></span></li>");
 	
 	//prepend the title label
 	$('#chi-table tr:last').prepend("<td class='rowtitle'>" + title + '</td>');
-	
-	//update number of rows
-	window.numRows++;
 	
 }
 
@@ -61,14 +61,14 @@ function edit(identifier) {
 	//get small and large box information
 	var small = prompt("Enter Small Box Content");
 	var large = prompt("Enter Large Box Content");
+	var rowCol = identifier.split(" ");
 	
 	if (is_int(small) && is_int(large)){
-		alert(rowCol[1]);
-		
 		//add information to the box
 		$("."+rowCol[0]+"."+rowCol[1]).html("<div class='small-box'>"+small+"</div><div class='large-box'>"+large+"</div>");
 		
 		//update the chi squared information
+		calculateRowMarginal(rowCol[0]);
 		updateChiSquared(identifier);
 	} else {
 		alert("Inputs are invalid :(");
@@ -76,19 +76,35 @@ function edit(identifier) {
 }
 
 function updateChiSquared(identifier) {
-	var boxId = "chi-squared"+identifier;
+	var rowCol = identifier.split(" ");
+	var boxId = "chi-squared"+rowCol[0]+rowCol[1];
 	
 	//add the chi-squared bulletpoint if it doesn't exist
 	if (!$("#"+boxId).length){
 		$("#chi-squared-numbers").append("<li id='"+boxId+"'></li>");
 	}
 	
-	var big = parseInt($("."+identifier+" > .large-box").text());
-	var small = parseInt($("."+identifier+" > .small-box").text());
+	var big = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .large-box").text());
+	var small = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .small-box").text());
 	var chisquare = Math.pow((big-small), 2) / small;
 	
 	$("#"+boxId).html(identifier+": <span class='result'>"+chisquare+"</span>");
 	calculateChiTotal();
+}
+
+function calculateRowMarginal(rowId) {
+	var marginal = 0;
+	
+	//get all elements in a row and add up the large box part
+	$("."+rowId).each(function() {
+		var text = $(this).find(".large-box").text();
+		if (is_int(text)) {
+			marginal += parseInt(text);
+		}
+	});
+
+	//update UI
+	$("#row-marginals > #marginal"+rowId+" > .marginal").text(marginal);
 }
 
 function calculateChiTotal() {
