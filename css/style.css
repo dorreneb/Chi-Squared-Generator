@@ -34,18 +34,15 @@ div#middle {
 	height: 80%;
 	
 }
- 
-#main-content {
-	height: 100%;
+
+#chi-table {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #chi-table th, td{
 	border: 1px solid black;
-}
-
-#options {
-	height: 80%;
-	width: 160px;
-	float: right;
-	border-left: 1px solid #E0DEDF;
+	width: 30px;
+	height: 20px;
+	padding: 5px;
 }
