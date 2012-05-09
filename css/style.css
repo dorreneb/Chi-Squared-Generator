@@ -41,8 +41,8 @@ div#middle {
 }
 
 th, td{
-	width: 30px;
-	height: 20px;
+	width: 40px;
+	height: 15px;
 	padding: 5px;
 }
 
@@ -62,15 +62,31 @@ td.rowtitle {
 }
 
 .small-box {
-	font-size: 10px;
+	font-size: 11px;
 	color: blue;
+	
 	float: right;
 	margin-top: 0px;
-	vertical-align: top;
+	vertical-align: bottom;
+	text-align: right;
+	
+	border-left: 1px solid black;
+	border-bottom: 1px solid black;
+	
+	padding: 5px;
+	
+	margin-left: 2px;
+	margin-bottom: 2px;
+	margin-top: -5px;
+	margin-right: -5px;
+	
+	
 }
 
 .large-box {
 	text-align: center;
+	padding: 0px;
+	margin: 0px;
 }
 
 .result {

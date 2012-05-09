@@ -1,35 +1,38 @@
-//initialize variables 
-function init() {
+//initialize variables when page loads
+window.onload = function() {
 	window.numCols = 0;
 	window.numRows = 0;
-}
-window.onload = init;
+};
 
+//add a row to the table
 function addRow() {
-	//get title (TODO: make this suck way less)
+	//get title
 	var title = prompt("Enter Cell Title");
 	
 	//add the row to the table
 	$('#chi-table tr:last').after('<tr></tr>');
-
-	//get the row index and initialize the col index
-	var row = $('#chi-table tr:last').prevAll().length;
-	
-	//add the cells to the row and label them appropriately.
-	for (var i=1; i <= window.numCols; i++) {
-		$('#chi-table tr:last').append("<td class='row"+row+" col"+i+"' onclick=\"edit('row"+row+" col"+i+"');\">" + " "+ '</td>');
-	}
-
-	//if this is the first row, then shift all the headers over 1 to make room for the title
-	if (row == 1) {
-		$("#chi-table tr:first").prepend("<th></th>");
-	}
 	
 	//update number of rows
 	window.numRows++;
 	
+	//add as many cells as there are columns and label them appropriately.
+	for (var i=1; i <= window.numCols; i++) {
+		$('#chi-table tr:last').append(
+			"<td class='row" + window.numRows + " col" + i +
+			"' onclick=\"edit('row" + window.numRows + " col" + i + "');\">" +
+			"</td>");
+	}
+
+	//if this is the first row, then shift all the column headers over one 
+	//to make room for the row titles
+	if (window.numRows == 1) {
+		$("#chi-table tr:first").prepend("<th></th>");
+	}
+	
 	//update row marginals
-	$("#row-marginals").append("<li id='marginalrow"+window.numRows+"'>" + title+ ": " + "<span class='marginal'></span></li>");
+	$("#row-marginals").append(
+		"<li id='marginalrow" + window.numRows + "'>" + title + ": " + 
+		"<span class='marginal'></span></li>");
 	
 	//prepend the title label
 	$('#chi-table tr:last').prepend("<td class='rowtitle'>" + title + '</td>');
@@ -37,37 +40,50 @@ function addRow() {
 }
 
 function addColumn() {
-	//get title (TODO: make this suck way less)
+	//get title
 	var title = prompt("Enter Cell Title");
 
 	//put header in table
 	$("#chi-table tr:first").append("<th>" + title + "</th>");
 	
-	//add an extra cell to each row
-	$('#chi-table tr:not(:first)').each(function(){
-		//get the first class attribute of the column before it (the row)
-		var rowClass = $(this).children().last().attr('class').split(" ")[0];
-		
-		$(this).append("<td class='"+rowClass+" col"+window.numCols+ "' onclick=\"edit('row"+row+" col"+window.numCols+"');\"></td>");
-	});
-	
+	//update number of columns
 	window.numCols++;
 	
+	//add an extra cell to each row that is not a column header row
+	var rowIndex = 1;
+	$('#chi-table tr:not(:first)').each(function(){
+		$(this).append(
+			"<td class='row" + rowIndex + " col" + window.numCols + "'" +
+			"onclick=\"edit('row" + rowIndex + " col" + window.numCols +
+			"');\"></td>");
+		rowIndex++;
+	});
+	
 	//update Column marginals
-	$("#column-marginals").append("<li class='marginalcol"+window.numCols+"'>" + title+ ": <span class='marginal'></span></li>");
+	$("#column-marginals").append(
+		"<li class='marginalcol" + window.numCols + "'>" + title + ": " +
+		"<span class='col-marginal'></span></li>");
 	
 	
 }
 
+//gets what should go into the small and large boxes from the user and then 
+//updates the chi squared box, the column marginals, and chi-squared totals
 function edit(identifier) {
 	//get small and large box information
 	var small = prompt("Enter Small Box Content");
 	var large = prompt("Enter Large Box Content");
+	
+	//get the row and column of the box that is being edited
+	//row is rowCol[0], col is rowCol[1].
 	var rowCol = identifier.split(" ");
 	
+	//if the inputs are valid, update!
 	if (is_int(small) && is_int(large)){
 		//add information to the box
-		$("."+rowCol[0]+"."+rowCol[1]).html("<div class='small-box'>"+small+"</div><div class='large-box'>"+large+"</div>");
+		$("." + rowCol[0] + "." + rowCol[1]).html(
+			"<div class='small-box'>" + small + "</div>" +
+			"<div class='large-box'>" + large + "</div>");
 		
 		//update the chi squared information
 		calculateRowMarginal(rowCol[0]);
@@ -105,6 +121,7 @@ function calculateRowMarginal(rowId) {
 			marginal += parseInt(text);
 		}
 	});
+	
 	//update UI
 	$("#row-marginals > #marginal"+rowId+" > .marginal").text(marginal);
 }
@@ -119,8 +136,9 @@ function calculateColMarginal(colId) {
 			marginal += parseInt(text);
 		}
 	});
+	
 	//update UI
-	$("#column-marginals > .marginal"+colId+" > .marginal").text(marginal);
+	$("#column-marginals > .marginal"+colId+" > .col-marginal").text(marginal);
 }
 
 function calculateChiTotal() {
