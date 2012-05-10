@@ -24,15 +24,15 @@ function addRow() {
 	}
 
 	//if this is the first row, then shift all the column headers over one 
-	//to make room for the row titles
+	//to make room for the row titles. Also add the row marginal column
 	if (window.numRows == 1) {
 		$("#chi-table tr:first").prepend("<th></th>");
 	}
 	
-	//update row marginals
-	$("#row-marginals").append(
-		"<li id='marginalrow" + window.numRows + "'>" + title + ": " + 
-		"<span class='marginal'></span></li>");
+	
+	//create row marginal cell
+	$("#chi-table tr:last").append(
+		"<td id='marginalrow" + window.numRows + "' class='marginal'></td>");
 	
 	//prepend the title label
 	$('#chi-table tr:last').prepend("<td class='rowtitle'>" + title + '</td>');
@@ -52,10 +52,17 @@ function addColumn() {
 	//add an extra cell to each row that is not a column header row
 	var rowIndex = 1;
 	$('#chi-table tr:not(:first)').each(function(){
+		//TODO: make this less messy -- it's hacky as all hell.
+		//remove the row marginal to add the column to the end
+		var marginal = $(this).find("td:last-child");
+		marginal.remove();
+		
+		//add the column and then re-add the row marginal
 		$(this).append(
 			"<td class='row" + rowIndex + " col" + window.numCols + "'" +
 			"onclick=\"edit('row" + rowIndex + " col" + window.numCols +
 			"');\"></td>");
+		$(this).append(marginal);
 		rowIndex++;
 	});
 	
@@ -113,6 +120,7 @@ function updateChiSquared(identifier) {
 
 function calculateRowMarginal(rowId) {
 	var marginal = 0;
+	var marginal_id = "marginal" + rowId;
 	
 	//get all elements in a row and add up the large box part
 	$("."+rowId).each(function() {
@@ -123,11 +131,13 @@ function calculateRowMarginal(rowId) {
 	});
 	
 	//update UI
-	$("#row-marginals > #marginal"+rowId+" > .marginal").text(marginal);
+	$("#" + marginal_id).text(marginal);
 }
 
+//TODO: fix the 
 function calculateColMarginal(colId) {
 	var marginal = 0;
+	
 	
 	//get all elements in a row and add up the large box part
 	$("."+colId).each(function() {
@@ -138,7 +148,7 @@ function calculateColMarginal(colId) {
 	});
 	
 	//update UI
-	$("#column-marginals > .marginal"+colId+" > .col-marginal").text(marginal);
+	$("#column-marginals > .marginal" + colId + " > .col-marginal").text(marginal);
 }
 
 function calculateChiTotal() {

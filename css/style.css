@@ -92,4 +92,10 @@ td.rowtitle {
 .result {
 	color: grey;
 }
+
+.marginal {
+	border: 0px;
+	font-size: 90%;
+	color: grey;
+}
 	
