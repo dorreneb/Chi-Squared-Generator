@@ -9,8 +9,14 @@ function addRow() {
 	//get title
 	var title = prompt("Enter Cell Title");
 	
-	//add the row to the table
-	$('#chi-table tr:last').after('<tr></tr>');
+	//temporarily remove the column marginals if it exists
+	var colmarginals = $('#chi-table tr.colmarginals');
+	if (colmarginals.length) {
+		colmarginals.remove();
+	} 
+	
+	//add the new row to the table
+	$("#chi-table tr:last").after('<tr></tr>');
 	
 	//update number of rows
 	window.numRows++;
@@ -22,21 +28,16 @@ function addRow() {
 			"' onclick=\"edit('row" + window.numRows + " col" + i + "');\">" +
 			"</td>");
 	}
-
-	//if this is the first row, then shift all the column headers over one 
-	//to make room for the row titles. Also add the row marginal column
-	if (window.numRows == 1) {
-		$("#chi-table tr:first").prepend("<th></th>");
-	}
-	
 	
 	//create row marginal cell
 	$("#chi-table tr:last").append(
-		"<td id='marginalrow" + window.numRows + "' class='marginal'></td>");
+		"<td id='row-marginalrow" + window.numRows + "' class='marginal'></td>");
 	
 	//prepend the title label
 	$('#chi-table tr:last').prepend("<td class='rowtitle'>" + title + '</td>');
 	
+	//re-add the column marginal row
+	$("#chi-table tr:last").after(colmarginals);
 }
 
 function addColumn() {
@@ -46,13 +47,24 @@ function addColumn() {
 	//put header in table
 	$("#chi-table tr:first").append("<th>" + title + "</th>");
 	
+	//if this is the first column, then shift all the column headers over one 
+	//to make room for the row titles. Also, create the column marginal row.
+	if (window.numCols == 0) {
+		$("#chi-table tr:first").prepend("<th></th>");
+	//if it is not the first row, remove the column marginal row temporarily
+	} else {
+		var columnMarginals = $("#chi-table tr.colmarginals");
+		columnMarginals.remove();
+	}
+	
 	//update number of columns
 	window.numCols++;
 	
 	//add an extra cell to each row that is not a column header row
 	var rowIndex = 1;
-	$('#chi-table tr:not(:first)').each(function(){
+	$('#chi-table tr:not(:first):not(.marginalcol)').each(function(){
 		//TODO: make this less messy -- it's hacky as all hell.
+		
 		//remove the row marginal to add the column to the end
 		var marginal = $(this).find("td:last-child");
 		marginal.remove();
@@ -66,11 +78,20 @@ function addColumn() {
 		rowIndex++;
 	});
 	
-	//update Column marginals
-	$("#column-marginals").append(
-		"<li class='marginalcol" + window.numCols + "'>" + title + ": " +
-		"<span class='col-marginal'></span></li>");
+	//if the column marginal row does not exist, make it
+	//otherwise, it has been removed earlier -- put it back in
+	if (window.numCols == 1) {
+		$("#chi-table tr:last").after(
+			'<tr class="colmarginals"><td class="marginal"></td></tr>');
+		var columnMarginals = $("#chi-table tr.colmarginals");
+	} else {
+		$("#chi-table tr:last").after(columnMarginals);
+	}
 	
+	//update Column marginals
+	columnMarginals.append(
+		"<td class='marginal'><span id='col-marginalcol" + window.numCols + 
+		"'></span></td>");
 	
 }
 
@@ -120,7 +141,7 @@ function updateChiSquared(identifier) {
 
 function calculateRowMarginal(rowId) {
 	var marginal = 0;
-	var marginal_id = "marginal" + rowId;
+	var marginal_id = "row-marginal" + rowId;
 	
 	//get all elements in a row and add up the large box part
 	$("."+rowId).each(function() {
@@ -134,11 +155,10 @@ function calculateRowMarginal(rowId) {
 	$("#" + marginal_id).text(marginal);
 }
 
-//TODO: fix the 
 function calculateColMarginal(colId) {
 	var marginal = 0;
-	
-	
+	var marginal_id = "col-marginal" + colId;
+
 	//get all elements in a row and add up the large box part
 	$("."+colId).each(function() {
 		var text = $(this).find(".large-box").text();
@@ -148,7 +168,7 @@ function calculateColMarginal(colId) {
 	});
 	
 	//update UI
-	$("#column-marginals > .marginal" + colId + " > .col-marginal").text(marginal);
+	$("#" + marginal_id).text(marginal);
 }
 
 function calculateChiTotal() {
