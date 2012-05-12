@@ -99,4 +99,11 @@ td.rowtitle {
 	color: grey;
 	text-align: center;
 }
+
+.population {
+	border: 0px;
+	font-size: 90%;
+	color: red;
+	text-align: center;
+}
 	

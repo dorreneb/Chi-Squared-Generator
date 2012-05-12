@@ -41,6 +41,8 @@ function addRow() {
 }
 
 function addColumn() {
+	var populationBox = null;
+	
 	//get title
 	var title = prompt("Enter Cell Title");
 
@@ -54,6 +56,13 @@ function addColumn() {
 	//if it is not the first row, remove the column marginal row temporarily
 	} else {
 		var columnMarginals = $("#chi-table tr.colmarginals");
+		
+		//if the population box exists, temporarily remove it
+		if ($("#chi-table tr.colmarginals > td.population").length) {
+			populationBox = $("#chi-table tr.colmarginals > td.population");
+			populationBox.remove();
+		}
+		
 		columnMarginals.remove();
 	}
 	
@@ -62,7 +71,7 @@ function addColumn() {
 	
 	//add an extra cell to each row that is not a column header row
 	var rowIndex = 1;
-	$('#chi-table tr:not(:first):not(.marginalcol)').each(function(){
+	$('#chi-table tr:not(:first)').each(function(){
 		//TODO: make this less messy -- it's hacky as all hell.
 		
 		//remove the row marginal to add the column to the end
@@ -88,10 +97,16 @@ function addColumn() {
 		$("#chi-table tr:last").after(columnMarginals);
 	}
 	
+
 	//update Column marginals
 	columnMarginals.append(
 		"<td class='marginal'><span id='col-marginalcol" + window.numCols + 
 		"'></span></td>");
+		
+	//if the population box was removed, re-add it.
+	if (populationBox != null) {
+		columnMarginals.append(populationBox);
+	}
 	
 }
 
@@ -117,6 +132,7 @@ function edit(identifier) {
 		calculateRowMarginal(rowCol[0]);
 		calculateColMarginal(rowCol[1]);
 		updateChiSquared(identifier);
+		calculatePopulation();
 	} else {
 		alert("Inputs are invalid :(");
 	}
@@ -133,7 +149,7 @@ function updateChiSquared(identifier) {
 	
 	var big = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .large-box").text());
 	var small = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .small-box").text());
-	var chisquare = Math.pow((big-small), 2) / small;
+	var chisquare = (Math.pow((big-small), 2) / small).toFixed(3);
 	
 	$("#"+boxId).html(identifier+": <span class='result'>"+chisquare+"</span>");
 	calculateChiTotal();
@@ -180,6 +196,24 @@ function calculateChiTotal() {
 	
 	//put the chi results on the screen
 	$("#chi-squared-result").html("<div class='final-result'>"+total+"</div>");
+}
+
+function calculatePopulation() {
+	//calculate population based on column marginals
+	var population = 0;
+	$("#chi-table tr.colmarginals > td.marginal").each(function() {
+		if (is_int($(this).text())){
+			population += parseInt($(this).text());
+		}
+	});
+	
+	//check if population box is in there, and if not, create one.
+	if ($("#chi-table tr.colmarginals > td.population").length == 0) {
+		$("#chi-table tr.colmarginals").append("<td class='population'></td>");
+	}
+	
+	//update the population
+	$("#chi-table tr.colmarginals > td.population").text(population);
 }
 
 //Source: http://www.inventpartners.com/content/javascript_is_int
