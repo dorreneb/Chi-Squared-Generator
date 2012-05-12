@@ -5,7 +5,8 @@
 	<title>Chi-Squared Solver</title>
 	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 	<script src="js/chi.js"></script>
-	<link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Varela'>
+	<link rel='stylesheet' type='text/css' 
+		href='http://fonts.googleapis.com/css?family=Varela'>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
@@ -15,8 +16,13 @@
 		<div id="left">
 			<h2>Options:</h2>
 			<ul>
-				<li><a href="javascript:void(0)" onclick="addRow();">Add Row</a></li>
-				<li><a href="javascript:void(0)" onclick="addColumn();">Add Column</a></li>
+				<li><a href="javascript:void(0)" onclick="addRow();">
+					Add Row</a></li>
+				<li><a href="javascript:void(0)" onclick="addColumn();">
+					Add Column</a></li>
+				<li><a href="javascript:void(0)" 
+					onclick="toggleAutocalculate();" id="auto-calc">
+					</a></li>
 			</ul>
 		</div>
 		<div id="right">

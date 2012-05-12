@@ -2,6 +2,9 @@
 window.onload = function() {
 	window.numCols = 0;
 	window.numRows = 0;
+	
+	//initialize the autocalc option
+	toggleAutocalculate();
 };
 
 //add a row to the table
@@ -214,6 +217,25 @@ function calculatePopulation() {
 	
 	//update the population
 	$("#chi-table tr.colmarginals > td.population").text(population);
+}
+
+function toggleAutocalculate() {
+	//if the autocalc setting is not set, initialize it
+	if (typeof window.autoCalc == 'undefined') {
+		window.autoCalc = true;
+	}
+	
+	
+	//swap boolean setting
+	window.autoCalc = !window.autoCalc;
+	
+	//get link to toggle option in GUI and swap text appropriately
+	var autoCalcDisplay = $("#auto-calc");
+	if (window.autoCalc) {
+		autoCalcDisplay.text("Stop auto calculating small boxes");
+	} else {
+		autoCalcDisplay.text("Auto calculate small boxes");
+	}
 }
 
 //Source: http://www.inventpartners.com/content/javascript_is_int
