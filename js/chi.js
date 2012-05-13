@@ -217,12 +217,38 @@ function updateChiSquared(identifier) {
 		$("#chi-squared-numbers").append("<li id='"+boxId+"'></li>");
 	}
 	
-	var big = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .large-box").text());
-	var small = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .small-box").text());
-	var chisquare = (Math.pow((big-small), 2) / small).toFixed(3);
+	//if the small box was manually entered, only the chi-value for the one box
+	//needs to be updated
+	if (!window.autoCalc) {
+		var big = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .large-box").text());
+		var small = parseInt($("."+rowCol[0]+"."+rowCol[1]+" > .small-box").text());
+		alert(identifier + ": big " + big + " small: " + small);
+		var chisquare = (Math.pow((big-small), 2) / small).toFixed(2);
+		
+		$("#"+boxId).html(identifier+": <span class='result'>"+chisquare+"</span>");
+	} else {
+		recalculateAllChiBoxes();
+	}
 	
-	$("#"+boxId).html(identifier+": <span class='result'>"+chisquare+"</span>");
 	calculateChiTotal();
+}
+
+function recalculateAllChiBoxes(){
+	$(".chi-box").each(function() {
+		//get the class of the box, which contains its coordinates
+		//editingBox[1] is row, editingBox[2] is col
+		var editingBox = $(this).attr('class').split(" ");
+		var row = editingBox[1];
+		var col = editingBox[2];
+		var boxId = "chi-squared"+row+col;
+		//alert(row +" "+col);
+		
+		var big = parseInt($("."+row+"."+col+" > .large-box").text());
+		var small = parseInt($("."+row+"."+col+" > .small-box").text());
+		var chisquare = (Math.pow((big-small), 2) / small).toFixed(2);
+		
+		$("#"+boxId).html(row+" "+col+": <span class='result'>"+chisquare+"</span>");
+	});
 }
 
 function calculateRowMarginal(rowId) {
@@ -265,7 +291,7 @@ function calculateChiTotal() {
 	});
 	
 	//put the chi results on the screen
-	$("#chi-squared-result").html("<div class='final-result'>"+total+"</div>");
+	$("#chi-squared-result").html("<div class='final-result'>"+total.toFixed(2)+"</div>");
 }
 
 function calculatePopulation() {
