@@ -27,7 +27,7 @@ function addRow() {
 	//add as many cells as there are columns and label them appropriately.
 	for (var i=1; i <= window.numCols; i++) {
 		$('#chi-table tr:last').append(
-			"<td class='row" + window.numRows + " col" + i +
+			"<td class='chi-box row" + window.numRows + " col" + i +
 			"' onclick=\"edit('row" + window.numRows + " col" + i + "');\">" +
 			"</td>");
 	}
@@ -83,7 +83,7 @@ function addColumn() {
 		
 		//add the column and then re-add the row marginal
 		$(this).append(
-			"<td class='row" + rowIndex + " col" + window.numCols + "'" +
+			"<td class='chi-box row" + rowIndex + " col" + window.numCols + "'" +
 			"onclick=\"edit('row" + rowIndex + " col" + window.numCols +
 			"');\"></td>");
 		$(this).append(marginal);
@@ -131,38 +131,73 @@ function edit(identifier) {
 		var rowCol = identifier.split(" ");
 		
 		//update large box information -- create div if it doesn't exist
-		if ($("." + rowCol[0] + "." + rowCol[1] + " > div.large-box").length) {
-			$("." + rowCol[0] + "." + rowCol[1] + " > div.large-box").text(large);
+		box = $("." + rowCol[0] + "." + rowCol[1] + " > div.large-box");
+		if (box.length) {
+			box.text(large);
 		} else {
 			$("." + rowCol[0] + "." + rowCol[1]).html(
 				"<div class='large-box'>" + large + "</div>");
 		}
 		
-		//get the row and column marginal information
+		//get the row and column marginal information and the population
 		calculateRowMarginal(rowCol[0]);
 		calculateColMarginal(rowCol[1]);
+		calculatePopulation();
 		
-		//if the small box must be auto-calculated, do so
-		if (window.autoCalc){
-			var small = 5;
-		} 
+		//if the small box data div doesn't exist, create it 
+		prepSmallBox(rowCol[0], rowCol[1]);
 		
 		//add small box data to the screen
-		var box = $("." + rowCol[0] + "." + rowCol[1] + " > div.small-box");
-		if (box.length) {
-			box.text(small);
+		if (!window.autoCalc) {
+			$("." + rowCol[0] + "." + rowCol[1] + " > div.small-box").text(small);
 		} else {
-			box = $("." + rowCol[0] + "." + rowCol[1]);
-			box.html("<div class='small-box'>" + small + "</div>" + box.html());
+			calculateSmallBoxes();
 		}
 
 		//update the chi squared information
 		updateChiSquared(identifier);
-		calculatePopulation();
 		
 	} else {
 		alert("Inputs are invalid :(");
 	}
+}
+
+//because 
+function prepSmallBox (row, col) {
+	//if the small box data div doesn't exist, create it
+	if (!$("." + row + "." + col + " > div.small-box").length) {
+		$("." + row + "." + col).html(
+			"<div class='small-box'></div>" + 
+			$("." + row + "." + col).html());
+	}
+}
+
+function calculateSmallBoxes() {
+	var population = $(".population");
+	var smallBox = -1;
+	
+	$(".chi-box").each(function() {
+		//get the class of the box, which contains its coordinates
+		//editingBox[1] is row, editingBox[2] is col
+		var editingBox = $(this).attr('class').split(" ");
+		var row = editingBox[1];
+		var col = editingBox[2];
+		
+		//if the small box data div doesn't exist, create it 
+		prepSmallBox(row, col);
+		
+		//calculate the small box
+		if (window.numRows == 1) {
+			smallBox = 0;
+		} else {
+			smallBox = 4;
+		}
+		
+		//put the small box in the 
+		$(this).find("div.small-box").text(smallBox);
+		
+	});
+	
 }
 
 function updateChiSquared(identifier) {
@@ -248,7 +283,6 @@ function toggleAutocalculate() {
 	if (typeof window.autoCalc == 'undefined') {
 		window.autoCalc = true;
 	}
-	
 	
 	//swap boolean setting
 	window.autoCalc = !window.autoCalc;
