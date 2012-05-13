@@ -173,7 +173,7 @@ function prepSmallBox (row, col) {
 }
 
 function calculateSmallBoxes() {
-	var population = $(".population");
+	var population = parseInt($(".population").text());
 	var smallBox = -1;
 	
 	$(".chi-box").each(function() {
@@ -188,7 +188,7 @@ function calculateSmallBoxes() {
 		
 		//calculate the small box
 		if (window.numRows == 1) {
-			smallBox = 0;
+			smallBox = population / window.numCols;
 		} else {
 			smallBox = 4;
 		}
