@@ -117,25 +117,49 @@ function addColumn() {
 //updates the chi squared box, the column marginals, and chi-squared totals
 function edit(identifier) {
 	//get small and large box information
-	var small = prompt("Enter Small Box Content");
 	var large = prompt("Enter Large Box Content");
+	if (!window.autoCalc) {
+		var small = prompt("Enter Small Box Content");
+	}
 	
-	//get the row and column of the box that is being edited
-	//row is rowCol[0], col is rowCol[1].
-	var rowCol = identifier.split(" ");
-	
-	//if the inputs are valid, update!
-	if (is_int(small) && is_int(large)){
-		//add information to the box
-		$("." + rowCol[0] + "." + rowCol[1]).html(
-			"<div class='small-box'>" + small + "</div>" +
-			"<div class='large-box'>" + large + "</div>");
+	//check for validity and continue if it is
+	if ((window.autoCalc && is_int(large)) || 
+		(!window.autoCalc && is_int(small) && is_int(large))) {
 		
-		//update the chi squared information
+		//get the row and column of the box that is being edited
+		//row is rowCol[0], col is rowCol[1].
+		var rowCol = identifier.split(" ");
+		
+		//update large box information -- create div if it doesn't exist
+		if ($("." + rowCol[0] + "." + rowCol[1] + " > div.large-box").length) {
+			$("." + rowCol[0] + "." + rowCol[1] + " > div.large-box").text(large);
+		} else {
+			$("." + rowCol[0] + "." + rowCol[1]).html(
+				"<div class='large-box'>" + large + "</div>");
+		}
+		
+		//get the row and column marginal information
 		calculateRowMarginal(rowCol[0]);
 		calculateColMarginal(rowCol[1]);
+		
+		//if the small box must be auto-calculated, do so
+		if (window.autoCalc){
+			var small = 5;
+		} 
+		
+		//add small box data to the screen
+		var box = $("." + rowCol[0] + "." + rowCol[1] + " > div.small-box");
+		if (box.length) {
+			box.text(small);
+		} else {
+			box = $("." + rowCol[0] + "." + rowCol[1]);
+			box.html("<div class='small-box'>" + small + "</div>" + box.html());
+		}
+
+		//update the chi squared information
 		updateChiSquared(identifier);
 		calculatePopulation();
+		
 	} else {
 		alert("Inputs are invalid :(");
 	}
