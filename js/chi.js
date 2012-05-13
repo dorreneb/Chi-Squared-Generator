@@ -162,7 +162,6 @@ function edit(identifier) {
 	}
 }
 
-//because 
 function prepSmallBox (row, col) {
 	//if the small box data div doesn't exist, create it
 	if (!$("." + row + "." + col + " > div.small-box").length) {
@@ -191,21 +190,22 @@ function calculateSmallBoxes() {
 			smallBox = population / window.numCols;
 		} else {
 			//get the colmarginal - if it's not a number assign it 0
-			var colMarginal = parseInt($("#col-marginal" + col).text());
-			colMarginal = isNaN(colMarginal) ? 0 : colMarginal;
-			
-			//get the colmarginal - if it's not a number assign it 0
-			var rowMarginal = parseInt($("#row-marginal" + row).text());
-			rowMarginal = isNaN(rowMarginal) ? 0 : rowMarginal;
-			
-			smallBox = (colMarginal * rowMarginal) / population;
+			var colMarginal = getMarginal("col-marginal", col);
+			var rowMarginal = getMarginal("row-marginal", row);
+			smallBox = Math.floor((colMarginal * rowMarginal) / population);
 		}
 		
-		//put the small box in the 
+		//put the info in the small box
 		$(this).find("div.small-box").text(smallBox);
 		
 	});
-	
+}
+
+//get the marginal - if it's not a number/blank assign it 0
+function getMarginal(label, loc) {
+	var marginal = parseInt($("#" + label + loc).text());
+	marginal = isNaN(marginal) ? 0 : marginal;
+	return marginal;
 }
 
 function updateChiSquared(identifier) {
