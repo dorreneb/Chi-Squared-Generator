@@ -190,7 +190,15 @@ function calculateSmallBoxes() {
 		if (window.numRows == 1) {
 			smallBox = population / window.numCols;
 		} else {
-			smallBox = 4;
+			//get the colmarginal - if it's not a number assign it 0
+			var colMarginal = parseInt($("#col-marginal" + col).text());
+			colMarginal = isNaN(colMarginal) ? 0 : colMarginal;
+			
+			//get the colmarginal - if it's not a number assign it 0
+			var rowMarginal = parseInt($("#row-marginal" + row).text());
+			rowMarginal = isNaN(rowMarginal) ? 0 : rowMarginal;
+			
+			smallBox = (colMarginal * rowMarginal) / population;
 		}
 		
 		//put the small box in the 
