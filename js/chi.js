@@ -41,6 +41,9 @@ function addRow() {
 	
 	//re-add the column marginal row
 	$("#chi-table tr:last").after(colmarginals);
+	
+	//calculate degrees of freedom
+	calculateDegreesOfFreedom();
 }
 
 function addColumn() {
@@ -110,6 +113,9 @@ function addColumn() {
 	if (populationBox != null) {
 		columnMarginals.append(populationBox);
 	}
+	
+	//calculate degrees of freedom
+	calculateDegreesOfFreedom();
 	
 }
 
@@ -292,6 +298,22 @@ function calculateChiTotal() {
 	
 	//put the chi results on the screen
 	$("#chi-squared-result").html("<div class='final-result'>"+total.toFixed(2)+"</div>");
+}
+
+function calculateDegreesOfFreedom() {
+	var degrees = -1;
+	
+	if (window.numRows == 1) {
+		degrees = window.numCols - 1;
+	} else if (window.numRows > 1) {
+		degrees = (window.numRows - 1) * (window.numCols - 1);
+	}
+	
+	if (degrees > 0) {
+		$("#degrees-of-freedom").text(degrees);
+	} else {
+		$("#degrees-of-freedom").text("n/a");
+	}
 }
 
 function calculatePopulation() {
